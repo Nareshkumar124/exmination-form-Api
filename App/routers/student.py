@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, Path, Response, Depends
+from fastapi import APIRouter, Body, Path, Response, Depends,HTTPException,status
 from pydantic import BaseModel
 from typing import Annotated
 from ..database.db import get_db
@@ -26,5 +26,5 @@ async def getStudenDetail(auid: Annotated[str, Path()], db: Session = Depends(ge
     try:
         studentData: Student = db.query(Student).filter(Student.auid == auid).one()
     except NoResultFound:
-        return {"error": "Data not found"}
-    return studentData.__dict__
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Data not found")
+    return studentData

@@ -1,64 +1,82 @@
 from .db import Base,engine
-from sqlalchemy import ForeignKey,Integer,Boolean,String
-from sqlalchemy.orm import Mapped,mapped_column
+from sqlalchemy import ForeignKey,Integer,Boolean,String,Column
 from sqlalchemy.types import DATE
 import uuid
 
 class Student(Base):
     __tablename__='student'
-    auid:Mapped[str]=mapped_column('auid',String,primary_key=True)
-    firstName:Mapped[str]=mapped_column('first_name',String,nullable=False)
-    lastName:Mapped[str]=mapped_column('last_name',String,nullable=False)
-    image:Mapped[str]=mapped_column('image',String,nullable=False)
-    fatherName:Mapped[str]=mapped_column('father_name',String,nullable=False)
-    motherName:Mapped[str]=mapped_column('mother_name',String,nullable=False)
-    address:Mapped[str]=mapped_column('address',String,nullable=False)
-    phoneNumber:Mapped[str]=mapped_column('phone_number',String,nullable=False)
-    email:Mapped[str]=mapped_column('email',String)
-    semester:Mapped[int]=mapped_column('semester',Integer,nullable=False)
-    programID:Mapped[int]=mapped_column('program_id',Integer,ForeignKey('program.program_id'))
+    auid=Column('auid',String,primary_key=True)
+    password=Column('password',String,nullable=False)
+    firstName=Column('first_name',String,nullable=False)
+    lastName=Column('last_name',String,nullable=False)
+    image=Column('image',String,nullable=False)
+    fatherName=Column('father_name',String,nullable=False)
+    motherName=Column('mother_name',String,nullable=False)
+    address=Column('address',String,nullable=False)
+    phoneNumber=Column('phone_number',String,nullable=False)
+    email=Column('email',String)
+    semester=Column('semester',Integer,nullable=False)
+    programID=Column('program_id',Integer,ForeignKey('program.program_id'))
     
 
 class Department(Base):
     __tablename__='department'
-    departmentID:Mapped[str]=mapped_column('department_id',String,primary_key=True,default=uuid.uuid4())
-    departmentName:Mapped[str]=mapped_column('department_name',String,nullable=False)
+    departmentID=Column('department_id',String,primary_key=True,default=uuid.uuid4())
+    departmentName=Column('department_name',String,nullable=False)
     
 class Program(Base):
     __tablename__='program'
-    programID:Mapped[int]=mapped_column('program_id',Integer,primary_key=True)
-    programName:Mapped[str]=mapped_column('program_name',String,nullable=False)
-    duration:Mapped[int]=mapped_column('duration',Integer,nullable=False)
-    departmentID:Mapped[str]=mapped_column('department_id',String,ForeignKey('department.department_id'))
+    programID=Column('program_id',Integer,primary_key=True)
+    programName=Column('program_name',String,nullable=False)
+    duration=Column('duration',Integer,nullable=False)
+    departmentID=Column('department_id',String,ForeignKey('department.department_id'))
     
 
-class Reciept(Base):
-    __tablename__='reciept'
-    recieptNumber:Mapped[str]=mapped_column('reciept_number',String,primary_key=True)
-    auid:Mapped[str]=mapped_column('auid',String,ForeignKey('student.auid'))
-    fees:Mapped[int]=mapped_column('fees',Integer,nullable=False)
-    date:Mapped[DATE]=mapped_column('date',DATE,nullable=False)
-    regular:Mapped[bool]=mapped_column('regualar',Boolean,nullable=False,default=True)
+class Receipt(Base):
+    __tablename__='receipt'
+    receiptNumber=Column('receipt_number',String,primary_key=True)
+    auid=Column('auid',String,ForeignKey('student.auid'))
+    fees=Column('fees',Integer,nullable=False)
+    date=Column('date',DATE,nullable=False)
+    regular=Column('regular',Boolean,nullable=False,default=True)
     
-class RecieptRe(Base):
-    __tablename__='reciept_re'
-    recieptNumber:Mapped[str]=mapped_column('reciept_number',String,primary_key=True)
-    auid:Mapped[str]=mapped_column('auid',String,ForeignKey('student.auid'))
-    fees:Mapped[int]=mapped_column('fees',Integer,nullable=False)
-    date:Mapped[DATE]=mapped_column('date',DATE,nullable=False)
-    subjectCode:Mapped[str]=mapped_column('subject_code',String,ForeignKey('subject.subject_code'))
+class ReceiptRe(Base):
+    __tablename__='receipt_re'
+    receiptNumber=Column('receipt_number',String,primary_key=True)
+    auid=Column('auid',String,ForeignKey('student.auid'))
+    fees=Column('fees',Integer,nullable=False)
+    date=Column('date',DATE,nullable=False)
+    subjectCode=Column('subject_code',String,ForeignKey('subject.subject_code'))
 
 class Subject(Base):
     __tablename__='subject'
-    subjectCode:Mapped[str]=mapped_column('subject_code',String,primary_key=True)
-    subjectName:Mapped[str]=mapped_column('subject_name',String,nullable=False)
+    subjectCode=Column('subject_code',String,primary_key=True)
+    subjectName=Column('subject_name',String,nullable=False)
     
 class ProgramAndSubject(Base):
     __tablename__='program_and_subject'
-    key:Mapped[int]=mapped_column('key',Integer,autoincrement=True,primary_key=True)
-    programID:Mapped[int]=mapped_column('program_id',Integer,ForeignKey('program.program_id'))
-    semester:Mapped[int]=mapped_column('semester',Integer,nullable=False)
-    subjectCode:Mapped[str]=mapped_column('subject_code',String,ForeignKey('subject.subject_code'))
+    key=Column('key',Integer,autoincrement=True,primary_key=True)
+    programID=Column('program_id',Integer,ForeignKey('program.program_id'))
+    semester=Column('semester',Integer,nullable=False)
+    subjectCode=Column('subject_code',String,ForeignKey('subject.subject_code'))
+
+class PreviousResult(Base):
+    __tablename__='previous_result'
+    id=Column('id',Integer,primary_key=True,autoincrement=True)
+    auid=Column('auid',String,ForeignKey('student.auid'))
+    receiptNumber=Column('receipt_number',String,ForeignKey('receipt.receipt_number'))
+    examination=Column('examination',String,nullable=False)
+    board=Column('board',String,nullable=False)
+    session=Column('session',DATE,nullable=False)
+    rollNo=Column('roll_no',String,nullable=False)
+    passFail=Column('pass_fail',Boolean,nullable=False)
+    reAppear=Column('re_appear',Boolean,nullable=False)
+    
+class PreviousSubject(Base):
+    __tablename__='previous_subject'
+    previousYearSubjectID=Column('previous_year_subject_id',Integer,autoincrement=True,primary_key=True)
+    id=Column('id',Integer,ForeignKey('previous_result.id'))
+    subjectName=Column('subject_name',String)
     
 
 # Base.metadata.create_all(bind=engine)
