@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers import student,department
+from .routers import student,department,authentication
 
 app=FastAPI(
     docs_url='/',
@@ -7,6 +7,7 @@ app=FastAPI(
 )
 app.include_router(student.router)
 app.include_router(department.router)
+app.include_router(authentication.router)
 
 
 
